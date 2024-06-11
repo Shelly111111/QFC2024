@@ -8,7 +8,7 @@
 4. URI 格式均为 /AAA/BBB 或者 /AAA/BBB/CCC 格式，按 AAA 分类，输出各个类别
 下 URI 都有哪些。
 
-`本题推荐使用 Java 语言和 Guava 库。`
+本题推荐使用 Java 语言和 Guava 库。
 
 ## 二、有效代码行数统计
 从本题对应的附件中找到 StringUtils.java 文件，将其复制到工程的 classpath 下，编程
