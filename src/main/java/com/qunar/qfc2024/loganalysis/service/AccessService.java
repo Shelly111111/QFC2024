@@ -1,12 +1,13 @@
 package com.qunar.qfc2024.loganalysis.service;
 
-import com.qunar.qfc2024.loganalysis.pojo.FrequentInterface;
 import com.qunar.qfc2024.loganalysis.pojo.GroupedURL;
-import org.springframework.web.servlet.tags.Param;
+import com.qunar.qfc2024.loganalysis.pojo.InterfaceStat;
 
 import java.util.List;
 
 /**
+ * 问题一：日志分析
+ *
  * @author zhangge
  * @date 2024/6/9
  */
@@ -19,17 +20,17 @@ public interface AccessService {
      * @author zhangge
      * @date 2024/6/9
      */
-    Long getQueryCount();
+    Integer getQueryCount();
 
     /**
      * 获取请求最频繁的接口列表
      *
-     * @param count 接口数
+     * @param limitCount 接口数
      * @return 最频繁的接口列表
      * @author zhangge
      * @date 2024/6/10
      */
-    List<FrequentInterface> getFrequentInterface(Long count);
+    List<InterfaceStat> getFrequentInterface(Long limitCount);
 
     /**
      * 获取各个请求方式的请求量
@@ -38,7 +39,7 @@ public interface AccessService {
      * @author zhangge
      * @date 2024/6/10
      */
-    List<Param> getQueryMethodCount();
+    List<InterfaceStat> getQueryMethodCount();
 
     /**
      * URL 格式均为 /AAA/BBB 或者 /AAA/BBB/CCC 格式，按 AAA 分类

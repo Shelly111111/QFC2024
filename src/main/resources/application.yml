@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: QFC2024
+
+
+question:
+  basePath: attachments
+  files:
+    one:
+      path: Question 1/access.log
