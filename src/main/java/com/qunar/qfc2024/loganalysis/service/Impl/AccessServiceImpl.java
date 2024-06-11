@@ -1,6 +1,9 @@
 package com.qunar.qfc2024.loganalysis.service.Impl;
 
 import com.google.common.base.Splitter;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.qunar.qfc2024.loganalysis.enumeration.QueryMethod;
 import com.qunar.qfc2024.loganalysis.pojo.GroupedURL;
@@ -18,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -36,7 +40,19 @@ public class AccessServiceImpl implements AccessService {
     @Value("${question.files.one.path}")
     private String[] filePaths;
 
-    private final ArrayList<InterfaceInfo> interfaceInfos = Lists.newArrayList();
+//    private final ArrayList<InterfaceInfo> interfaceInfos = Lists.newArrayList();
+    private final Object lock = new Object();
+
+    private final LoadingCache<String, InterfaceInfo> cache = CacheBuilder.newBuilder()
+            .maximumSize(1000000L)
+            .expireAfterWrite(10, TimeUnit.MINUTES)
+            .expireAfterAccess(10, TimeUnit.MINUTES)
+            .build(new CacheLoader<String, InterfaceInfo>() {
+                @Override
+                public InterfaceInfo load(String s) throws Exception {
+                    return null;
+                }
+            });
 
     /**
      * 读取接口文件
@@ -45,38 +61,66 @@ public class AccessServiceImpl implements AccessService {
      * @date 2024/6/11
      */
     private void readInterfaceFile() {
-        //读取测试文件
-        Resource resource = new ClassPathResource(Paths.get(basePath, filePaths[0]).toString());
-        try {
-            //获取流
-            InputStream inputStream = resource.getInputStream();
-            //扫描每行
-            Scanner scanner = new Scanner(inputStream);
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                if (StringUtils.isBlank(line)) {
-                    continue;
-                }
-                //转化为接口信息类并存储到列表中
-                interfaceInfos.add(new InterfaceInfo(line));
-            }
+//        interfaceInfos.clear();
+        synchronized (lock){
+            Map<String, InterfaceInfo> map = new HashMap<>(cache.asMap());
+            if(map.isEmpty()){
+                cache.cleanUp();
+                //读取测试文件
+                Resource resource = new ClassPathResource(Paths.get(basePath, filePaths[0]).toString());
+                try {
+                    //获取流
+                    InputStream inputStream = resource.getInputStream();
+                    //扫描每行
+                    Scanner scanner = new Scanner(inputStream);
+                    while (scanner.hasNextLine()) {
+                        String line = scanner.nextLine();
+                        if (StringUtils.isBlank(line)) {
+                            continue;
+                        }
+                        //转化为接口信息类并存储到Cache中
+                        InterfaceInfo interfaceInfo = new InterfaceInfo(line);
+                        cache.put(interfaceInfo.getUuid(),interfaceInfo);
+                    }
 
-        } catch (IOException e) {
-            log.error(e.getMessage());
+                } catch (IOException e) {
+                    log.error(e.getMessage());
+                }
+            }
         }
+//        //读取测试文件
+//        Resource resource = new ClassPathResource(Paths.get(basePath, filePaths[0]).toString());
+//        try {
+//            //获取流
+//            InputStream inputStream = resource.getInputStream();
+//            //扫描每行
+//            Scanner scanner = new Scanner(inputStream);
+//            while (scanner.hasNextLine()) {
+//                String line = scanner.nextLine();
+//                if (StringUtils.isBlank(line)) {
+//                    continue;
+//                }
+//                //转化为接口信息类并存储到列表中
+//                interfaceInfos.add(new InterfaceInfo(line));
+//            }
+//
+//        } catch (IOException e) {
+//            log.error(e.getMessage());
+//        }
     }
 
     @Override
     public Integer getQueryCount() {
         readInterfaceFile();
-        return interfaceInfos.size();
+        return new HashMap<>(cache.asMap()).size();
+//        return interfaceInfos.size();
     }
 
     @Override
     public List<InterfaceStat> getFrequentInterface(Long limitCount) {
         readInterfaceFile();
         //统计各个接口的请求数量
-        Map<String, Long> map = interfaceInfos.stream()
+        Map<String, Long> map = new HashMap<>(cache.asMap()).values().stream()
                 .collect(Collectors.groupingBy(InterfaceInfo::getUrl, Collectors.counting()));
         List<InterfaceStat> list = map.entrySet()
                 //按照请求数量进行从大到小排序
@@ -97,7 +141,7 @@ public class AccessServiceImpl implements AccessService {
     public List<InterfaceStat> getQueryMethodCount() {
         readInterfaceFile();
         //统计GET和POST的请求数量
-        Map<QueryMethod, Long> map = interfaceInfos.stream()
+        Map<QueryMethod, Long> map = new HashMap<>(cache.asMap()).values().stream()
                 //过滤除GET和POST请求外的请求
                 .filter(a -> (a.getMethod() == QueryMethod.GET || a.getMethod() == QueryMethod.POST))
                 .collect(Collectors.groupingBy(InterfaceInfo::getMethod, Collectors.counting()));
@@ -115,7 +159,11 @@ public class AccessServiceImpl implements AccessService {
     @Override
     public List<GroupedURL> getGroupedURL() {
         readInterfaceFile();
-        Map<String, List<InterfaceInfo>> map = interfaceInfos.stream()
+        Map<String, List<InterfaceInfo>> map = new HashMap<>(cache.asMap())
+                .values()
+                .stream()
+                //保证url是按照/AAA/BBB而不是其他开头
+                .filter(a->a.getUrl().matches("/[^/]+/[^/]+"))
                 .collect(Collectors.groupingBy(
                         //根据/AAA进行分组
                         a -> Splitter.on('/')

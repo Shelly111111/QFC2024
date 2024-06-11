@@ -14,6 +14,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -26,6 +27,9 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Validated
 public class InterfaceInfo {
+
+    @ApiModelProperty("主键")
+    private String uuid;
 
     @ApiModelProperty("请求字符串")
     @NotBlank(message = "请求字符串不能为空")
@@ -55,10 +59,13 @@ public class InterfaceInfo {
      */
     public InterfaceInfo(String queryString) {
 
+        uuid = UUID.randomUUID().toString();
+
         assert StringUtils.isNotBlank(queryString) : "请求字符串不能为空";
         allQueryString = queryString;
 
-        List<String> list = Splitter.on(' ').trimResults().splitToList(queryString);
+
+        List<String> list = Splitter.on(' ').omitEmptyStrings().splitToList(queryString);
         assert list.size() == 2 : "请求字符串格式必须为:\"请求方式+' '+请求地址及参数组成\"";
 
         method = QueryMethod.getMethod(list.get(0));
@@ -68,9 +75,9 @@ public class InterfaceInfo {
         url = query.get(0);
 
         if (query.size() > 1) {
-            List<String> queryArgs = Splitter.on('&').trimResults().splitToList(query.get(1));
+            List<String> queryArgs = Splitter.on('&').omitEmptyStrings().trimResults().splitToList(query.get(1));
             args = queryArgs.stream().map(a -> {
-                List<String> arg = Splitter.on('=').splitToList(a);
+                List<String> arg = Splitter.on('=').omitEmptyStrings().trimResults().splitToList(a);
                 assert arg.size() == 2 : "请求参数使用'='分割，且请求参数中不可存在其他'='字符";
                 Param param = new Param();
                 param.setName(arg.get(0));
