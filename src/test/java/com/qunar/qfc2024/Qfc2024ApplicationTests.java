@@ -1,5 +1,6 @@
 package com.qunar.qfc2024;
 
+import com.qunar.qfc2024.codelines.service.CodeLineService;
 import com.qunar.qfc2024.loganalysis.pojo.GroupedURL;
 import com.qunar.qfc2024.loganalysis.pojo.InterfaceInfo;
 import com.qunar.qfc2024.loganalysis.pojo.InterfaceStat;
@@ -8,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.io.IOException;
 import java.util.List;
 
 @SpringBootTest
@@ -16,6 +16,9 @@ class Qfc2024ApplicationTests {
 
     @Autowired
     private AccessService accessService;
+
+    @Autowired
+    private CodeLineService codeLineService;
 
     @Test
     void test() {
@@ -51,6 +54,12 @@ class Qfc2024ApplicationTests {
     void getGroupedURLTest() {
         List<GroupedURL> groupedURL = accessService.getGroupedURL();
         System.out.println(groupedURL);
+    }
+
+    @Test
+    void getCodeLineCountTest(){
+        Long count = codeLineService.getCodeLineCount();
+        System.out.println(count);
     }
 
 }

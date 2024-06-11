@@ -8,7 +8,8 @@ attachments:
   questions:
     one:
       folder: Question 1
-      files: access.log
+      file: access.log
     two:
       folder: Question 2
-      files: StringUtils.java
+      file: StringUtils.java
+      output: validLineCount.txt

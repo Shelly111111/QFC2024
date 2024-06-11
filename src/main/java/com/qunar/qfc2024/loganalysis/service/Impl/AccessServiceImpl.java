@@ -39,8 +39,8 @@ public class AccessServiceImpl implements AccessService {
     @Value("${attachments.questions.one.folder}")
     private String folder;
 
-    @Value("${attachments.questions.one.files}")
-    private String[] files;
+    @Value("${attachments.questions.one.file}")
+    private String file;
 
     private final Object lock = new Object();
 
@@ -67,7 +67,7 @@ public class AccessServiceImpl implements AccessService {
             if(map.isEmpty()){
                 cache.cleanUp();
                 //读取测试文件
-                Resource resource = new ClassPathResource(Paths.get(basePath, folder, files[0]).toString());
+                Resource resource = new ClassPathResource(Paths.get(basePath, folder, file).toString());
                 try {
                     //获取流
                     InputStream inputStream = resource.getInputStream();
@@ -83,6 +83,10 @@ public class AccessServiceImpl implements AccessService {
                         cache.put(interfaceInfo.getUuid(),interfaceInfo);
                     }
 
+                    //关闭Scanner
+                    scanner.close();
+                    //关闭流
+                    inputStream.close();
                 } catch (IOException e) {
                     log.error(e.getMessage());
                 }
