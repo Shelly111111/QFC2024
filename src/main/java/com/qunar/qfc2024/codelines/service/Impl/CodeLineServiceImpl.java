@@ -34,72 +34,86 @@ public class CodeLineServiceImpl implements CodeLineService {
     @Value("${attachments.questions.two.output}")
     private String output;
 
+    /**
+     * 计算有效代码行
+     *
+     * @param inputStream 输入流
+     * @return 有效代码行数
+     */
+    private Long calCodeLine(InputStream inputStream) {
+        Long count = 0L;
+        boolean canAdd = true;
+        //扫描每行
+        Scanner scanner = new Scanner(inputStream);
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            String s = line.trim();
+            //如果是空白行
+            if (StringUtils.isBlank(s)) {
+                continue;
+            }
+
+            //处理"/* xxxxx */"类注释
+            if (!canAdd) {
+                if (s.endsWith("*/")) {
+                    canAdd = true;
+                }
+                continue;
+            }
+            if (s.startsWith("/*")) {
+                if (!s.endsWith("*/")) {
+                    canAdd = false;
+                }
+                continue;
+            }
+
+            //处理"//"类注释
+            if (s.startsWith("//")) {
+                continue;
+            }
+
+            count++;
+        }
+        //关闭scanner
+        scanner.close();
+        return count;
+    }
+
     @Override
     public Long getCodeLineCount() {
-        Long count = 0L;
+
         //读取测试文件
         Resource resource = new ClassPathResource(Paths.get(basePath, folder, file).toString());
         String rootPath = System.getProperty("user.dir");
         try {
-            //获取流
+            //获取输入流
             InputStream inputStream = resource.getInputStream();
-            //扫描每行
-            Scanner scanner = new Scanner(inputStream);
+
+            //计算有效代码行
+            Long count = calCodeLine(inputStream);
+
+            //关闭流
+            inputStream.close();
+
             //获取输出文件
             File file = new File(Paths.get(rootPath, "out", output).toString());
             if (!file.exists()) {
-                boolean newFile = file.createNewFile();
-                System.out.println(newFile);
+                file.createNewFile();
             }
             //获取输出流
             OutputStream outputStream = new FileOutputStream(file);
-
-            boolean canAdd = true;
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                String s = line.trim();
-                //如果是空白行
-                if (StringUtils.isBlank(s)) {
-                    continue;
-                }
-
-                //处理"/* xxxxx */"类注释
-                if (!canAdd) {
-                    if (s.endsWith("*/")) {
-                        canAdd = true;
-                    }
-                    continue;
-                }
-                if (s.startsWith("/*")) {
-                    if (!s.endsWith("*/")) {
-                        canAdd = false;
-                    }
-                    continue;
-                }
-
-                //处理"//"类注释
-                if (s.startsWith("//")) {
-                    continue;
-                }
-//                outputStream.write(line.getBytes());
-//                outputStream.write('\n');
-                count++;
-            }
 
             //写入文件
             outputStream.write(count.toString().getBytes());
             outputStream.flush();
 
-            //关闭scanner
-            scanner.close();
-            //关闭流
-            inputStream.close();
             //关闭输出流
             outputStream.close();
 
+            return count;
         } catch (IOException e) {
             log.error(e.getMessage());
         }
-        return count;
+        return 0L;
     }
 }
