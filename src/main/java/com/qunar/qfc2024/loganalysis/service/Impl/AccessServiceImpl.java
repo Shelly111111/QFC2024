@@ -40,7 +40,6 @@ public class AccessServiceImpl implements AccessService {
     @Value("${question.files.one.path}")
     private String[] filePaths;
 
-//    private final ArrayList<InterfaceInfo> interfaceInfos = Lists.newArrayList();
     private final Object lock = new Object();
 
     private final LoadingCache<String, InterfaceInfo> cache = CacheBuilder.newBuilder()
@@ -49,7 +48,7 @@ public class AccessServiceImpl implements AccessService {
             .expireAfterAccess(10, TimeUnit.MINUTES)
             .build(new CacheLoader<String, InterfaceInfo>() {
                 @Override
-                public InterfaceInfo load(String s) throws Exception {
+                public InterfaceInfo load(String s) {
                     return null;
                 }
             });
@@ -61,7 +60,6 @@ public class AccessServiceImpl implements AccessService {
      * @date 2024/6/11
      */
     private void readInterfaceFile() {
-//        interfaceInfos.clear();
         synchronized (lock){
             Map<String, InterfaceInfo> map = new HashMap<>(cache.asMap());
             if(map.isEmpty()){
@@ -88,32 +86,12 @@ public class AccessServiceImpl implements AccessService {
                 }
             }
         }
-//        //读取测试文件
-//        Resource resource = new ClassPathResource(Paths.get(basePath, filePaths[0]).toString());
-//        try {
-//            //获取流
-//            InputStream inputStream = resource.getInputStream();
-//            //扫描每行
-//            Scanner scanner = new Scanner(inputStream);
-//            while (scanner.hasNextLine()) {
-//                String line = scanner.nextLine();
-//                if (StringUtils.isBlank(line)) {
-//                    continue;
-//                }
-//                //转化为接口信息类并存储到列表中
-//                interfaceInfos.add(new InterfaceInfo(line));
-//            }
-//
-//        } catch (IOException e) {
-//            log.error(e.getMessage());
-//        }
     }
 
     @Override
     public Integer getQueryCount() {
         readInterfaceFile();
         return new HashMap<>(cache.asMap()).size();
-//        return interfaceInfos.size();
     }
 
     @Override
