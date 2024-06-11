@@ -4,7 +4,6 @@ import com.google.common.base.Splitter;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.collect.Lists;
 import com.qunar.qfc2024.loganalysis.enumeration.QueryMethod;
 import com.qunar.qfc2024.loganalysis.pojo.GroupedURL;
 import com.qunar.qfc2024.loganalysis.pojo.InterfaceInfo;
@@ -34,11 +33,14 @@ import java.util.stream.Collectors;
 @Slf4j
 public class AccessServiceImpl implements AccessService {
 
-    @Value("${question.basePath}")
+    @Value("${attachments.basePath}")
     private String basePath;
 
-    @Value("${question.files.one.path}")
-    private String[] filePaths;
+    @Value("${attachments.questions.one.folder}")
+    private String folder;
+
+    @Value("${attachments.questions.one.files}")
+    private String[] files;
 
     private final Object lock = new Object();
 
@@ -65,7 +67,7 @@ public class AccessServiceImpl implements AccessService {
             if(map.isEmpty()){
                 cache.cleanUp();
                 //读取测试文件
-                Resource resource = new ClassPathResource(Paths.get(basePath, filePaths[0]).toString());
+                Resource resource = new ClassPathResource(Paths.get(basePath, folder, files[0]).toString());
                 try {
                     //获取流
                     InputStream inputStream = resource.getInputStream();

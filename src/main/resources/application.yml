@@ -3,8 +3,12 @@ spring:
     name: QFC2024
 
 
-question:
+attachments:
   basePath: attachments
-  files:
+  questions:
     one:
-      path: Question 1/access.log
+      folder: Question 1
+      files: access.log
+    two:
+      folder: Question 2
+      files: StringUtils.java
