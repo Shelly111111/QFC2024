@@ -5,6 +5,7 @@ import com.qunar.qfc2024.loganalysis.pojo.GroupedURL;
 import com.qunar.qfc2024.loganalysis.pojo.InterfaceInfo;
 import com.qunar.qfc2024.loganalysis.pojo.InterfaceStat;
 import com.qunar.qfc2024.loganalysis.service.AccessService;
+import com.qunar.qfc2024.textdecryption.service.TextDecryptService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +20,9 @@ class Qfc2024ApplicationTests {
 
     @Autowired
     private CodeLineService codeLineService;
+
+    @Autowired
+    private TextDecryptService textDecryptService;
 
     @Test
     void test() {
@@ -62,4 +66,8 @@ class Qfc2024ApplicationTests {
         System.out.println(count);
     }
 
+    @Test
+    void decryptTest(){
+        textDecryptService.textDecrypt();
+    }
 }
