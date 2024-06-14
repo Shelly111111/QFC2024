@@ -5,6 +5,7 @@ import com.qunar.qfc2024.loganalysis.pojo.GroupedURL;
 import com.qunar.qfc2024.loganalysis.pojo.InterfaceInfo;
 import com.qunar.qfc2024.loganalysis.pojo.InterfaceStat;
 import com.qunar.qfc2024.loganalysis.service.AccessService;
+import com.qunar.qfc2024.shellsimulation.service.ShellService;
 import com.qunar.qfc2024.textdecryption.service.TextDecryptService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ class Qfc2024ApplicationTests {
 
     @Autowired
     private TextDecryptService textDecryptService;
+
+    @Autowired
+    private ShellService shellService;
 
     @Test
     void test() {
@@ -61,13 +65,25 @@ class Qfc2024ApplicationTests {
     }
 
     @Test
-    void getCodeLineCountTest(){
+    void getCodeLineCountTest() {
         Long count = codeLineService.getCodeLineCount();
         System.out.println(count);
     }
 
     @Test
-    void decryptTest(){
+    void decryptTest() {
         textDecryptService.textDecrypt();
+    }
+
+    @Test
+    void shellTest() {
+//        String cmd = "cat out\\sdxl.txt";
+//        String cmd = "cat out\\sdxl.txt | grep 我 ";
+        String cmd = "cat out\\sdxl.txt | grep 我 | wc -l";
+
+//        String cmd = "grep 我 out\\sdxl.txt";
+
+//        String cmd = "wc -l out\\sdxl.txt";
+        shellService.run(cmd);
     }
 }
