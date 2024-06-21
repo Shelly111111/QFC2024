@@ -86,4 +86,5 @@ class Qfc2024ApplicationTests {
 //        String cmd = "wc -l out\\sdxl.txt";
         shellService.run(cmd);
     }
+
 }
