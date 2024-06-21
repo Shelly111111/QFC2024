@@ -54,7 +54,7 @@ grep exception | wc -l**，可以用来统计一个文件中 **exception** 出�
 
 请注意程序对于未来加入其他命令的可扩展性和对于大规模输入的内存开销。
 
-**代码见`shellsimulation`，相关测试于`Qfc2024ApplicationTests`**
+代码见[shellsimulation](https://github.com/Shelly111111/QFC2024/tree/master/src/main/java/com/qunar/qfc2024/loganalysis)，相关测试于`Qfc2024ApplicationTests`
 
 ## 五、Java 网络编程
 使用 java socket 编程实现一 server 和 client，client 通过命令行读取用户输入的网址，将
