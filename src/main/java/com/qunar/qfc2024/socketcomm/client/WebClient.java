@@ -1,7 +1,6 @@
 package com.qunar.qfc2024.socketcomm.client;
 
 import com.qunar.qfc2024.socketcomm.common.CharacterUtil;
-import com.qunar.qfc2024.socketcomm.pojo.WebInfo;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -97,7 +96,6 @@ public class WebClient {
             //关闭所有事件组
             group.shutdownGracefully();
         }
-
 
     }
 }
