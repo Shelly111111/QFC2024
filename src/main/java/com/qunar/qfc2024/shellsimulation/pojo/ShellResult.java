@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Result<T> {
+public class ShellResult<T> {
 
     @ApiModelProperty("结果数据")
     private T data;

@@ -2,8 +2,8 @@ package com.qunar.qfc2024.shellsimulation.service.Impl;
 
 import com.google.common.base.Splitter;
 import com.qunar.qfc2024.shellsimulation.common.Shell;
-import com.qunar.qfc2024.shellsimulation.pojo.Command;
-import com.qunar.qfc2024.shellsimulation.pojo.Result;
+import com.qunar.qfc2024.shellsimulation.pojo.ShellCommand;
+import com.qunar.qfc2024.shellsimulation.pojo.ShellResult;
 import com.qunar.qfc2024.shellsimulation.service.ShellService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,11 +36,11 @@ public class ShellServiceImpl implements ShellService {
         Shell shell = new Shell();
 
         //分解command
-        List<Command> cmds = Splitter.on("|")
+        List<ShellCommand> cmds = Splitter.on("|")
                 .trimResults().omitEmptyStrings()
                 .splitToList(command)
                 //转化为Command
-                .stream().map(Command::new)
+                .stream().map(ShellCommand::new)
                 .collect(Collectors.toList());
 
 
@@ -50,17 +50,17 @@ public class ShellServiceImpl implements ShellService {
         File file = new File(filename);
 
         try {
-            Result context = new Result<>();
+            ShellResult context = new ShellResult<>();
             //循环读取每一行，这里不考虑一行数据量过大的超大型文件
             Scanner scanner = new Scanner(file);
             while (scanner.hasNextLine()) {
-                context = new Result<>(scanner.nextLine(), false);
+                context = new ShellResult<>(scanner.nextLine(), false);
                 //根据命令处理改行
-                for (Command cmd : cmds) {
+                for (ShellCommand cmd : cmds) {
                     //根据命令名获取相关方法
-                    Method method = Shell.class.getMethod(cmd.getName(), Result.class, List.class, List.class);
+                    Method method = Shell.class.getMethod(cmd.getName(), ShellResult.class, List.class, List.class);
                     //方法调用
-                    context = (Result) method.invoke(shell, context, cmd.getOpts(), cmd.getArgs());
+                    context = (ShellResult) method.invoke(shell, context, cmd.getOpts(), cmd.getArgs());
                 }
                 //判断结果并输出
                 if (Objects.isNull(context)) {

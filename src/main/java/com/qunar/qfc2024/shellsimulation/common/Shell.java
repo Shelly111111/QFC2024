@@ -1,6 +1,6 @@
 package com.qunar.qfc2024.shellsimulation.common;
 
-import com.qunar.qfc2024.shellsimulation.pojo.Result;
+import com.qunar.qfc2024.shellsimulation.pojo.ShellResult;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -24,7 +24,7 @@ public class Shell {
      * @author zhangge
      * @date 2024/6/14
      */
-    public Result<String> cat(Result<String> context, List<String> opts, List<String> args) {
+    public ShellResult<String> cat(ShellResult<String> context, List<String> opts, List<String> args) {
         return context;
     }
 
@@ -38,7 +38,7 @@ public class Shell {
      * @author zhangge
      * @date 2024/6/14
      */
-    public Result<String> grep(Result<String> context, List<String> opts, List<String> args) {
+    public ShellResult<String> grep(ShellResult<String> context, List<String> opts, List<String> args) {
         if (Objects.isNull(context) || StringUtils.isBlank(context.getData())) {
             return null;
         }
@@ -63,11 +63,11 @@ public class Shell {
      * @author zhangge
      * @date 2024/6/14
      */
-    public Result<Integer> wc(Result<String> context, List<String> opts, List<String> args) {
+    public ShellResult<Integer> wc(ShellResult<String> context, List<String> opts, List<String> args) {
         if (Objects.isNull(context)) {
-            return new Result<>(wcCount, true);
+            return new ShellResult<>(wcCount, true);
         }
         wcCount++;
-        return new Result<>(wcCount, true);
+        return new ShellResult<>(wcCount, true);
     }
 }

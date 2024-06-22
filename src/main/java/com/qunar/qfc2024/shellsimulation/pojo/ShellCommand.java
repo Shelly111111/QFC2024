@@ -18,7 +18,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Command {
+public class ShellCommand {
 
     @ApiModelProperty("命令名")
     private String name;
@@ -29,7 +29,7 @@ public class Command {
     @ApiModelProperty("参数")
     private List<String> args;
 
-    public Command(String cmd) {
+    public ShellCommand(String cmd) {
         opts = new ArrayList<>();
         args = new ArrayList<>();
         List<String> list = new ArrayList<>(Splitter.on(" ").trimResults().omitEmptyStrings().splitToList(cmd));
