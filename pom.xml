@@ -57,4 +57,23 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <resources>
+            <!--将src/main/resources目录下的配置文件编译到classes-->
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.*</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>lib</directory>
+                <targetPath>BOOT-INF/lib/</targetPath>
+                <includes>
+                    <include>**/*.jar</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
+
 </project>
