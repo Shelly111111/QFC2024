@@ -62,9 +62,11 @@ public class AccessServiceImpl implements AccessService {
      * @date 2024/6/11
      */
     private void readInterfaceFile() {
-        synchronized (lock){
+        synchronized (lock) {
             Map<String, InterfaceInfo> map = new HashMap<>(cache.asMap());
-            if(map.isEmpty()){
+            if (map.isEmpty()) {
+                //清空cache
+                cache.invalidateAll();
                 cache.cleanUp();
                 //读取测试文件
                 Resource resource = new ClassPathResource(Paths.get(basePath, folder, file).toString());
@@ -80,7 +82,7 @@ public class AccessServiceImpl implements AccessService {
                         }
                         //转化为接口信息类并存储到Cache中
                         InterfaceInfo interfaceInfo = new InterfaceInfo(line);
-                        cache.put(interfaceInfo.getUuid(),interfaceInfo);
+                        cache.put(interfaceInfo.getUuid(), interfaceInfo);
                     }
 
                     //关闭Scanner
@@ -147,7 +149,7 @@ public class AccessServiceImpl implements AccessService {
                 .values()
                 .stream()
                 //保证url是按照/AAA/BBB而不是其他开头
-                .filter(a->a.getUrl().matches("/[^/]+/[^/]+"))
+                .filter(a -> a.getUrl().matches("/[^/]+/[^/]+"))
                 .collect(Collectors.groupingBy(
                         //根据/AAA进行分组
                         a -> Splitter.on('/')
