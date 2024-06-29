@@ -62,3 +62,10 @@ grep exception | wc -l**，可以用来统计一个文件中 **exception** 出�
 英文字符数、标点符号数，返回给 client，并输出。使用 nio 加分。
 
 代码见 [socketcomm](https://github.com/Shelly111111/QFC2024/tree/master/src/main/java/com/qunar/qfc2024/socketcomm) ，服务器端请执行 [server.WebServer](https://github.com/Shelly111111/QFC2024/blob/master/src/main/java/com/qunar/qfc2024/socketcomm/server/WebServer.java) ，客户端请执行 [client.WebClient](https://github.com/Shelly111111/QFC2024/blob/master/src/main/java/com/qunar/qfc2024/socketcomm/client/WebClient.java)
+
+## 相关项目
+
+1. [QFC2024-web](https://github.com/Shelly111111/qfc2024-web) <br>
+   基于react和ant design开发的web前端展示样例。主要提供：登录/注销、日志分析、代码行数统计、文本解密以及Shell模拟的功能。
+2. [QFC2024-backend](https://github.com/Shelly111111/QFC2024-backend) <br>
+   采用DDD架构设计的后端服务，以对应前端展示的功能需求。
