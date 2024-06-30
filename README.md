@@ -71,3 +71,7 @@ grep exception | wc -l**，可以用来统计一个文件中 **exception** 出�
    基于react和ant design开发的web前端展示样例。主要提供：登录/注销、日志分析、代码行数统计、文本解密以及Shell模拟的功能。
 2. [QFC2024-backend](https://github.com/Shelly111111/QFC2024-backend) <br>
    采用DDD架构设计的后端服务，以对应前端展示的功能需求。
+
+## 在线demo
+
+http://49.232.6.238:8000/
